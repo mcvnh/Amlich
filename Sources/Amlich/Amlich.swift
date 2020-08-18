@@ -1,25 +1,14 @@
-/*
- * Copyright (c) 2006 Ho Ngoc Duc. All Rights Reserved.
- * Astronomical algorithms from the book "Astronomical Algorithms" by Jean Meeus, 1998
- *
- * Permission to use, copy, modify, and redistribute this software and its
- * documentation for personal, non-commercial use is hereby granted provided that
- * this copyright notice and appropriate documentation appears in all copies.
- */
+//
+//  Date.swift
+//
+//
+//  Created by Mac Van Anh on 8/18/20.
+//
+//  This is the implementation in Swift of the original JS version
+//  https://github.com/vanng822/amlich/blob/master/lib/amlich-aa98.js
+//
+
 import Foundation
-
-struct SolarDate {
-    let day: Int
-    let month: Int
-    let year: Int
-}
-
-struct LunarDate {
-    let day: Int
-    let month: Int
-    let year: Int
-    let leapYear: Bool
-}
 
 struct Amlich {
     /*
@@ -27,7 +16,7 @@ struct Amlich {
      * of days between 1/1/4713 BC (Julian calendar) and dd/mm/yyyy.
      * Formula from http://www.tondering.dk/claus/calendar.html
      */
-    static func jdFromDate(_ date: SolarDate) -> Int {
+    static func fromDate(_ date: SolarDate) -> Int {
         let (day, month, year) = (date.day, date.month, date.year)
 
         let a: Int = (14 - day) / 12
@@ -47,7 +36,7 @@ struct Amlich {
     /*
      * Convert a Julian day number to day/month/year.
      */
-    static func jdToDate(jd: Int) -> SolarDate {
+    static func toDate(jd: Int) -> SolarDate {
         var a, b, c: Int
 
         if jd > 2299160 { // After 5/10/1582, Gregorian calendar
@@ -114,18 +103,17 @@ struct Amlich {
      * Algorithm from: "Astronomical Algorithms" by Jean Meeus, 1998
      */
     static func sunLongtitude(of jdn: Double) -> Double {
-        let T: Double = (jdn - 2451545.0) / 36525
-        let T2: Double = T * T
-        let dr: Double = Double.pi / 180
-        let M: Double = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2
-        let L0: Double = 280.46645 + 36000.76983 * T + 0.0003032 * T2
-
-        var DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * sin(dr * M)
-        DL = DL + (0.019993 - 0.000101 * T) * sin(dr * 2.0 * M) + 0.000290 * sin(dr * 3 * M)
-
-        var L = L0 + DL
-        L = L - 360.0 * floor(L / 360)
-
+        let T: Double = (jdn - 2451545.0 ) / 36525 // Time in Julian centuries from 2000-01-01 12:00:00 GMT
+        let T2: Double = T*T
+        let dr: Double = Double.pi / 180 // degree to radian
+        let M: Double = 357.52910 + 35999.05030*T - 0.0001559*T2 - 0.00000048*T*T2 // mean anomaly, degree
+        let L0: Double = 280.46645 + 36000.76983*T + 0.0003032*T2 // mean longitude, degree
+        var DL: Double = (1.914600 - 0.004817*T - 0.000014*T2)*sin(dr*M)
+        DL = DL + (0.019993 - 0.000101*T)*sin(dr*2*M) + 0.000290*sin(dr*3*M)
+        var L: Double = L0 + DL // true longitude, degree
+        L = L*dr
+        
+        L = L - Double.pi * 2 * Double(Int(floor(L/(Double.pi * 2)))) // Normalize to (0, 2*PI)
         return L
     }
 
@@ -138,7 +126,7 @@ struct Amlich {
      * After that, return 1, 2, 3 ...
      */
     static func sunLongtitude(of dayNumber: Int, with timeZone: Double) -> Int {
-        return Int(self.sunLongtitude(of: Double(dayNumber) - 0.5 - timeZone / 24.0) / Double.pi * 6.0)
+        return Int(floor(self.sunLongtitude(of: Double(dayNumber) - 0.5 - timeZone / 24.0) / Double.pi * 6.0))
     }
 
     /*
@@ -146,15 +134,15 @@ struct Amlich {
      * The time zone if the time difference between local time and UTC: 7.0 for UTC+7:00
      */
     static func newMoonDay(of k: Int, with timeZone: Double) -> Int {
-        return Int(self.newMoon(of: k) + 0.5 + timeZone / 24.0);
+        return Int(floor(self.newMoon(of: k) + 0.5 + timeZone / 24.0))
     }
 
     /*
      * Find the day that starts the luner month 11 of the given year for the given time zone
      */
     static func lunarMonth11(of year: Int, with timeZone: Double) -> Int {
-        let off: Double = Double(self.jdFromDate(SolarDate(day: 31, month: 12, year: year))) - 2415021.076998695
-        let k: Int = Int(Double(off) / 29.530588853)
+        let off: Double = Double(self.fromDate(SolarDate(day: 31, month: 12, year: year))) - 2415021.076998695
+        let k: Int = Int(floor(Double(off) / 29.530588853))
         var nm: Int = newMoonDay(of: k, with: timeZone)
         let sunLong: Int = self.sunLongtitude(of: nm, with: timeZone) / 30
 
@@ -162,7 +150,7 @@ struct Amlich {
             nm = self.newMoonDay(of: k - 1, with: timeZone)
         }
 
-        return nm;
+        return nm
     }
 
 
@@ -170,16 +158,16 @@ struct Amlich {
      * Find the index of the leap month after the month starting on the day a11.
      */
     static func leapMonthOffset(of day: Int, with timeZone: Double) -> Int {
-        let k: Int = Int(0.5 + (Double(day) - 2415021.076998695) / 29.530588853)
+        let k: Int = Int(floor(0.5 + (Double(day) - 2415021.076998695) / 29.530588853))
 
         var last: Int
         var i = 1
-        var arc: Int = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone) / 30
+        var arc: Int = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
 
         repeat {
             last = arc
             i += 1
-            arc = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone) / 30
+            arc = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
         } while arc != last && i < 14
 
         return i - 1
@@ -188,12 +176,12 @@ struct Amlich {
     /*
      * Conver solar day dd/mm/yyyy to the corersponding lunar day
      */
-    static func toLunar(of solar: SolarDate, with timeZone: Double) -> LunarDate {
+    static func toLunar(of solarDate: SolarDate, with timeZone: Double) -> LunarDate {
         var lunarDay, lunarMonth, lunarYear: Int
-        var leapYear: Bool = false
+        var isLeap: Bool = false
 
-        let dayNumber: Int = self.jdFromDate(solar)
-        let k: Int = Int((Double(dayNumber) - 2415021.076998695) / 29.530588853)
+        let dayNumber: Int = self.fromDate(solarDate)
+        let k: Int = Int(floor((Double(dayNumber) - 2415021.076998695) / 29.530588853))
 
         var monthStart = newMoonDay(of: k + 1, with: timeZone)
 
@@ -201,15 +189,15 @@ struct Amlich {
             monthStart = newMoonDay(of: k, with: timeZone)
         }
 
-        var a11 = lunarMonth11(of: solar.year, with: timeZone)
+        var a11 = lunarMonth11(of: solarDate.year, with: timeZone)
         var b11 = a11
 
         if a11 >= monthStart {
-            lunarYear = solar.year
-            a11 = lunarMonth11(of: solar.year - 1, with: timeZone)
+            lunarYear = solarDate.year
+            a11 = lunarMonth11(of: solarDate.year - 1, with: timeZone)
         } else {
-            lunarYear = solar.year + 1
-            b11 = lunarMonth11(of: solar.year + 1, with: timeZone)
+            lunarYear = solarDate.year + 1
+            b11 = lunarMonth11(of: solarDate.year + 1, with: timeZone)
         }
 
         lunarDay = dayNumber - monthStart + 1
@@ -221,7 +209,7 @@ struct Amlich {
             if diff >= leapMonthDiff {
                 lunarMonth = diff + 10
                 if diff == leapMonthDiff {
-                    leapYear = true
+                    isLeap = true
                 }
             }
         }
@@ -233,7 +221,7 @@ struct Amlich {
             lunarYear -= 1
         }
 
-        return LunarDate(day: lunarDay, month: lunarMonth, year: lunarYear, leapYear: leapYear)
+        return LunarDate(day: lunarDay, month: lunarMonth, year: lunarYear, isLeap: isLeap)
     }
 
     /*
@@ -250,7 +238,7 @@ struct Amlich {
             b11 = lunarMonth11(of: lunar.year + 1, with: timeZone)
         }
 
-        let k: Int = Int(0.5 + (Double(a11) - 2415021.076998695) / 29.530588853)
+        let k: Int = Int(floor(0.5 + (Double(a11) - 2415021.076998695) / 29.530588853))
         var off: Int = lunar.month - 11
 
         if off < 0 {
@@ -263,15 +251,15 @@ struct Amlich {
             if leapMonth < 0 {
                 leapMonth += 12
             }
-            if lunar.leapYear && lunar.month != leapMonth {
+            if lunar.isLeap && lunar.month != leapMonth {
                 return SolarDate(day: 0, month: 0, year: 0)
-            } else if lunar.leapYear || off >= leapOff {
+            } else if lunar.isLeap || off >= leapOff {
                 off += 1
             }
         }
 
         let monthStart = newMoonDay(of: k + off, with: timeZone)
 
-        return self.jdToDate(jd: monthStart + lunar.day - 1)
+        return self.toDate(jd: monthStart + lunar.day - 1)
     }
 }
