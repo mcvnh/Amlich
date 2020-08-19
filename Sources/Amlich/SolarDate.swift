@@ -6,10 +6,16 @@
 //
 
 public struct SolarDate: Equatable, Comparable {
-    let day: Int
-    let month: Int
-    let year: Int
-    
+    public let day: Int
+    public let month: Int
+    public let year: Int
+
+    public init(day: Int, month: Int, year: Int) {
+        self.day = day
+        self.month = month
+        self.year = year
+    }
+
     public static func < (lhs: SolarDate, rhs: SolarDate) -> Bool {
         if lhs.year < rhs.year || lhs.month < rhs.month || lhs.day < rhs.day {
             return true

@@ -32,7 +32,7 @@ public enum SolarTerm: Int, CaseIterable {
     case minorCold
     case majorCold
 
-    static func of(solar date: SolarDate, in hour: (hh: Int, mm: Int), with timeZone: Double) -> SolarTerm {
+    public static func of(solar date: SolarDate, in hour: (hh: Int, mm: Int), with timeZone: Double) -> SolarTerm {
         let (hh, mm) = hour
         let jdn = Amlich.fromDate(date)
         let jdnWithHour: Double = Double(jdn) + Double(hh - 12)/24.0 + Double(mm)/1440.0 - timeZone / 24.0

@@ -6,11 +6,18 @@
 //
 
 public struct LunarDate: Equatable, Comparable {
-    let day: Int
-    let month: Int
-    let year: Int
-    let isLeap: Bool
-    
+    public let day: Int
+    public let month: Int
+    public let year: Int
+    public let isLeap: Bool
+
+    public init(day: Int, month: Int, year: Int, isLeap: Bool) {
+        self.day = day
+        self.month = month
+        self.year = year
+        self.isLeap = isLeap
+    }
+
     public static func < (lhs: LunarDate, rhs: LunarDate) -> Bool {
         if lhs.year < rhs.year || lhs.month < rhs.month || lhs.day < rhs.day {
             return true
