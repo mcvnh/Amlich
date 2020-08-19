@@ -97,12 +97,13 @@ struct Amlich {
         return JdNew
     }
 
+
     /*
      * Compute the longitude of the sun at any time.
      * Parameter: floating number jdn, the number of days since 1/1/4713 BC noon
      * Algorithm from: "Astronomical Algorithms" by Jean Meeus, 1998
      */
-    static func sunLongtitude(of jdn: Double) -> Double {
+    static func sunLongitude(of jdn: Double) -> Double {
         let T: Double = (jdn - 2451545.0 ) / 36525 // Time in Julian centuries from 2000-01-01 12:00:00 GMT
         let T2: Double = T * T
         let dr: Double = Double.pi / 180 // degree to radian
@@ -117,6 +118,27 @@ struct Amlich {
         return L
     }
 
+    /*
+     * Compute the longitude of the sun at any time.
+     * Parameter: floating number jdn, the number of days since 1/1/4713 BC noon
+     * Return a number in range (0, 360)
+     */
+    static func sunLongitudeAsAngle(of jdn: Double) -> Double {
+        let T: Double = (jdn - 2451545.0 ) / 36525 // Time in Julian centuries from 2000-01-01 12:00:00 GMT
+        let T2: Double = T * T
+        let dr: Double = Double.pi / 180 // degree to radian
+        let M: Double = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2 // mean anomaly, degree
+        let L0: Double = 280.46645 + 36000.76983 * T + 0.0003032 * T2 // mean longitude, degree
+        var DL: Double = (1.914600 - 0.004817 * T - 0.000014 * T2) * sin(dr * M)
+        DL = DL + (0.019993 - 0.000101 * T) * sin(dr * 2 * M) + 0.000290 * sin(dr * 3 * M)
+
+        let omega: Double = 125.04 - 1934.136 * T
+        var L: Double = L0 + DL // true longitude, degree
+        L = L - 0.00569 - 0.00478 * sin(omega * dr)
+        L = L - 360.0 * Double(Int(floor(L / 360.0))) // Normalize to (0, 2*PI)
+        return L
+    }
+
 
     /*
      * Compute sun position at midnight of the day with the given Julian day number.
@@ -125,10 +147,11 @@ struct Amlich {
      * From the day after March equinox and the 1st major term after March equinox, 0 is returned.
      * After that, return 1, 2, 3 ...
      */
-    static func sunLongtitude(of dayNumber: Int, with timeZone: Double) -> Int {
-        return Int(floor(self.sunLongtitude(of: Double(dayNumber) - 0.5 - timeZone / 24.0) / Double.pi * 6.0))
+    static func sunLongitude(of dayNumber: Int, with timeZone: Double) -> Int {
+        return Int(floor(self.sunLongitude(of: Double(dayNumber) - 0.5 - timeZone / 24.0) / Double.pi * 6.0))
     }
 
+    
     /*
      * Compute the day of the k-th new moon in the given time zone.
      * The time zone if the time difference between local time and UTC: 7.0 for UTC+7:00
@@ -137,6 +160,7 @@ struct Amlich {
         return Int(floor(self.newMoon(of: k) + 0.5 + timeZone / 24.0))
     }
 
+
     /*
      * Find the day that starts the luner month 11 of the given year for the given time zone
      */
@@ -144,7 +168,7 @@ struct Amlich {
         let off: Double = Double(self.fromDate(SolarDate(day: 31, month: 12, year: year))) - 2415021.076998695
         let k: Int = Int(floor(Double(off) / 29.530588853))
         var nm: Int = newMoonDay(of: k, with: timeZone)
-        let sunLong: Int = self.sunLongtitude(of: nm, with: timeZone) / 30
+        let sunLong: Int = self.sunLongitude(of: nm, with: timeZone) / 30
 
         if sunLong >= 9 {
             nm = self.newMoonDay(of: k - 1, with: timeZone)
@@ -162,16 +186,17 @@ struct Amlich {
 
         var last: Int
         var i = 1
-        var arc: Int = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
+        var arc: Int = self.sunLongitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
 
         repeat {
             last = arc
             i += 1
-            arc = self.sunLongtitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
+            arc = self.sunLongitude(of: self.newMoonDay(of: k + i, with: timeZone), with: timeZone)
         } while arc != last && i < 14
 
         return i - 1
     }
+
 
     /*
      * Conver solar day dd/mm/yyyy to the corersponding lunar day
@@ -224,6 +249,7 @@ struct Amlich {
         return LunarDate(day: lunarDay, month: lunarMonth, year: lunarYear, isLeap: isLeap)
     }
 
+    
     /*
      * Convert a lunar date to the corresponding solar date
      */

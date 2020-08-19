@@ -21,16 +21,20 @@ final class AmlichTestCase: XCTestCase {
         XCTAssertEqual(date.month, 10)
         XCTAssertEqual(date.year, 1582)
     }
-    
+
     func test_newMoon() {
         XCTAssertEqual(Amlich.newMoon(of: 10), 2415316.060423006)
     }
 
-    func test_sunLongtitude() {
-        XCTAssertEqual(Amlich.sunLongtitude(of: 10), 4.45054572657682)
-        XCTAssertEqual(Amlich.sunLongtitude(of: 10, with: 7), 8)
+    func test_sunLongitude() {
+        XCTAssertEqual(Amlich.sunLongitude(of: 10), 4.45054572657682)
+        XCTAssertEqual(Amlich.sunLongitude(of: 10, with: 7), 8)
     }
-    
+
+    func test_sunLongitudeAsAngle() {
+        XCTAssertEqual(Amlich.sunLongitudeAsAngle(of: 2459080.2083333335), 146.19908004776426)
+    }
+
     func test_newMoonDay() {
         XCTAssertEqual(Amlich.newMoonDay(of: 10, with: 7), 2415316)
     }

@@ -18,8 +18,6 @@ final class LunarDateTestCase: XCTestCase {
         XCTAssertEqual(lunarDate.month, 6)
         XCTAssertEqual(lunarDate.year, 2020)
         XCTAssertFalse(lunarDate.isLeap)
-        
-        print(lunarDate.description)
     }
 
     func test_toSonar() {
