@@ -15,23 +15,23 @@ Put `import Amlich` on the top of your source code
 let solarDate = SolarDate(day: 1, month: 1, year: 2020)
 let timeZone: Double = +7
 
-Amlich.toLunar(of: solarDate, with: timeZone)
+print(Amlich.toLunar(of: solarDate, with: timeZone))
 // or
-solarDate.toLunar(with: timeZone)
+print(solarDate.toLunar(with: timeZone))
 ```
 
 **Convert a lunar date to solar date**
 
 ```swift
-let lunarDate = LunarDate(day: 1, month: 1, year: 2020)
+let lunarDate = LunarDate(day: 1, month: 1, year: 2020, isLeap: false)
 let timeZone: Double = +7
 
-Amlich.toSolar(of: lunarDate, with: timeZone)
+print(Amlich.toSolar(of: lunarDate, with: timeZone))
 // or
-solarDate.toSolar(with: timeZone)
+print(lunarDate.toSolar(with: timeZone))
 ```
 
-**Get the solar term of the a date**
+**Get the solar term of a solar date**
 
 ```swift
 let solarDate = SolarDate(day: 1, month: 1, year: 2020)
@@ -50,4 +50,4 @@ SolarTerm.of(solar: solarDate, in: hour, with: timeZone)
 ## Help, feedback or suggestions?
 
 - [Open a PR](https://github.com/anhmv/Amlich/pull/new/master) if you want to make some change to Releases.
-- Contact [@johnsundell on Twitter](https://twitter.com/mvanh91) for discussions, news & announcements about Releases & other projects.
+- Contact [@mvanh91 on Twitter](https://twitter.com/mvanh91) for discussions, news & announcements about Releases & other projects.
