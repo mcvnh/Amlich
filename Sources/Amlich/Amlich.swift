@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct Amlich {
+public struct Amlich {
     /*
      * Compute the (integral) Julian day number of day dd/mm/yyyy, i.e., the number
      * of days between 1/1/4713 BC (Julian calendar) and dd/mm/yyyy.
@@ -201,7 +201,7 @@ struct Amlich {
     /*
      * Conver solar day dd/mm/yyyy to the corersponding lunar day
      */
-    static func toLunar(of solarDate: SolarDate, with timeZone: Double) -> LunarDate {
+    public static func toLunar(of solarDate: SolarDate, with timeZone: Double) -> LunarDate {
         var lunarDay, lunarMonth, lunarYear: Int
         var isLeap: Bool = false
 
@@ -253,7 +253,7 @@ struct Amlich {
     /*
      * Convert a lunar date to the corresponding solar date
      */
-    static func toSolar(of lunar: LunarDate, with timeZone: Double) -> SolarDate {
+    public static func toSolar(of lunar: LunarDate, with timeZone: Double) -> SolarDate {
         var a11, b11: Int
 
         if (lunar.month < 11) {

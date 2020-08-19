@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum SolarTerm: Int, CaseIterable {
+public enum SolarTerm: Int, CaseIterable {
     case startOfSpring = 1
     case rainWater
     case awakeningOfInsects
