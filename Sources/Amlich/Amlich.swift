@@ -201,7 +201,7 @@ public struct Amlich {
     /*
      * Conver solar day dd/mm/yyyy to the corersponding lunar day
      */
-    public static func toLunar(of solarDate: SolarDate, with timeZone: Double) -> LunarDate {
+    public static func toLunar(of solarDate: SolarDate, with timeZone: Double = 0) -> LunarDate {
         var lunarDay, lunarMonth, lunarYear: Int
         var isLeap: Bool = false
 
@@ -253,7 +253,7 @@ public struct Amlich {
     /*
      * Convert a lunar date to the corresponding solar date
      */
-    public static func toSolar(of lunar: LunarDate, with timeZone: Double) -> SolarDate {
+    public static func toSolar(of lunar: LunarDate, with timeZone: Double = 0) -> SolarDate {
         var a11, b11: Int
 
         if (lunar.month < 11) {

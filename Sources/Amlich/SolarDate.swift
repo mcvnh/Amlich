@@ -27,15 +27,15 @@ public struct SolarDate: Equatable, Comparable {
 }
 
 extension SolarDate {
-    public func toLunar(with timeZone: Double) -> LunarDate {
+    public func toLunar(with timeZone: Double = 0) -> LunarDate {
         return Amlich.toLunar(of: self, with: timeZone)
     }
     
-    public static func of(lunar date: LunarDate, timeZone: Double) -> SolarDate {
+    public static func of(lunar date: LunarDate, with timeZone: Double = 0) -> SolarDate {
         return Amlich.toSolar(of: date, with: timeZone)
     }
 
-    public static func of(_ date: Date, with timeZone: Double) -> SolarDate {
+    public static func of(_ date: Date, with timeZone: Double = 0) -> SolarDate {
         return Amlich.toSolar(of: LunarDate.from(date), with: timeZone)
     }
 

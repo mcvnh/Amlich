@@ -12,7 +12,7 @@ final class SolarDateTestCase: XCTestCase {
     func test_of() {
         let lunarDate = LunarDate(day: 29, month: 6, year: 2020, isLeap: false)
         let hanoiTimeZone: Double = +7
-        let solarDate = SolarDate.of(lunar: lunarDate, timeZone: hanoiTimeZone)
+        let solarDate = SolarDate.of(lunar: lunarDate, with: hanoiTimeZone)
 
         XCTAssertEqual(solarDate.day, 18)
         XCTAssertEqual(solarDate.month, 8)
