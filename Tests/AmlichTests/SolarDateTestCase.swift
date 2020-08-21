@@ -19,6 +19,32 @@ final class SolarDateTestCase: XCTestCase {
         XCTAssertEqual(solarDate.year, 2020)
     }
 
+    func test_fromDateObject() {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2020 8 21")!
+
+        let solarDate = SolarDate.from(date)
+
+        XCTAssertEqual(solarDate.day, 21)
+        XCTAssertEqual(solarDate.month, 8)
+        XCTAssertEqual(solarDate.year, 2020)
+    }
+
+    func test_ofDateObject() {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2020 7 3")!
+
+        let solarDate = SolarDate.of(date, with: 7)
+
+        XCTAssertEqual(solarDate.day, 21)
+        XCTAssertEqual(solarDate.month, 8)
+        XCTAssertEqual(solarDate.year, 2020)
+    }
+
     func test_toLunar() {
         let solarDate = SolarDate(day: 18, month: 8, year: 2020)
         let hanoiTimeZone = +7.0

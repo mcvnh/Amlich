@@ -20,6 +20,32 @@ final class LunarDateTestCase: XCTestCase {
         XCTAssertFalse(lunarDate.isLeap)
     }
 
+    func test_fromDateObject() {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2020 8 21")!
+
+        let lunarDate = LunarDate.from(date)
+
+        XCTAssertEqual(lunarDate.day, 21)
+        XCTAssertEqual(lunarDate.month, 8)
+        XCTAssertEqual(lunarDate.year, 2020)
+    }
+
+    func test_ofDateObject() {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "yyyy MM dd"
+        let date = formatter.date(from: "2020 8 21")!
+
+        let lunarDate = LunarDate.of(date, with: 7.0)
+
+        XCTAssertEqual(lunarDate.day, 3)
+        XCTAssertEqual(lunarDate.month, 7)
+        XCTAssertEqual(lunarDate.year, 2020)
+    }
+    
     func test_toSonar() {
         let lunarDate = LunarDate(day: 29, month: 6, year: 2020, isLeap: false)
         let hanoiTimeZone = +7.0
@@ -41,7 +67,7 @@ final class LunarDateTestCase: XCTestCase {
 
         XCTAssertFalse(lunarDate2 == lunarDate1)
     }
-    
+
     func test_equalable() {
         let lunarDate1 = LunarDate(day: 10, month: 10, year: 2020, isLeap: false)
         let lunarDate2 = LunarDate(day: 10, month: 10, year: 2020, isLeap: false)
@@ -58,5 +84,4 @@ final class LunarDateTestCase: XCTestCase {
 
         XCTAssertFalse(lunarDate3 == lunarDate4)
     }
-
 }

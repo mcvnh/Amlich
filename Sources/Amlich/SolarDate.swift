@@ -4,6 +4,7 @@
 //
 //  Created by Mac Van Anh on 8/18/20.
 //
+import Foundation
 
 public struct SolarDate: Equatable, Comparable {
     public let day: Int
@@ -32,6 +33,17 @@ extension SolarDate {
     
     public static func of(lunar date: LunarDate, timeZone: Double) -> SolarDate {
         return Amlich.toSolar(of: date, with: timeZone)
+    }
+
+    public static func of(_ date: Date, with timeZone: Double) -> SolarDate {
+        return Amlich.toSolar(of: LunarDate.from(date), with: timeZone)
+    }
+
+
+    public static func from(_ date: Date) -> SolarDate {
+        let components = Calendar.current.dateComponents([.day, .month, .year], from: date)
+
+        return SolarDate(day: components.day ?? 0, month: components.month ?? 0, year: components.year ?? 0)
     }
 }
 
