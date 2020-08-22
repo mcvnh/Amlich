@@ -32,6 +32,13 @@ extension LunarDate {
     public func toSolar(with timeZone: Double = 0) -> SolarDate {
         return Amlich.toSolar(of: self, with: timeZone)
     }
+
+    public func toDate() -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MM yyyy"
+
+        return dateFormatter.date(from: "\(self.day) \(self.month) \(self.year)")
+    }
     
     public static func of(solar date: SolarDate, with timeZone: Double = 0) -> LunarDate {
         return Amlich.toLunar(of: date, with: timeZone)

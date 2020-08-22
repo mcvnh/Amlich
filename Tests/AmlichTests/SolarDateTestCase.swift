@@ -55,6 +55,21 @@ final class SolarDateTestCase: XCTestCase {
         XCTAssertEqual(lunarDate.year, 2020)
     }
 
+    func test_toDate() {
+        let solarDate = SolarDate(day: 1, month: 6, year: 2020)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MM yyyy"
+
+        let expectedDate = dateFormatter.date(from: "1 6 2020")!
+
+        let date = solarDate.toDate()!
+        XCTAssertTrue(date.compare(expectedDate) == .orderedSame)
+
+        let invalidSolarDate = SolarDate(day: 0, month: 0, year: 0)
+        XCTAssertNil(invalidSolarDate.toDate())
+    }
+
     func test_comparable() {
         let solarDate1 = SolarDate(day: 10, month: 10, year: 2020)
         let solarDate2 = SolarDate(day: 11, month: 10, year: 2020)

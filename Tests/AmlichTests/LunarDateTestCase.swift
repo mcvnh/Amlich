@@ -45,7 +45,22 @@ final class LunarDateTestCase: XCTestCase {
         XCTAssertEqual(lunarDate.month, 7)
         XCTAssertEqual(lunarDate.year, 2020)
     }
-    
+
+    func test_toDate() {
+        let lunarDate = LunarDate(day: 1, month: 6, year: 2020, isLeap: false)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MM yyyy"
+
+        let expectedDate = dateFormatter.date(from: "1 6 2020")!
+
+        let date = lunarDate.toDate()!
+        XCTAssertTrue(date.compare(expectedDate) == .orderedSame)
+
+        let invalidLunarDate = LunarDate(day: 0, month: 0, year: 0, isLeap: false)
+        XCTAssertNil(invalidLunarDate.toDate())
+    }
+
     func test_toSonar() {
         let lunarDate = LunarDate(day: 29, month: 6, year: 2020, isLeap: false)
         let hanoiTimeZone = +7.0
