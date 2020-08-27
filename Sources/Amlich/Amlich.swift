@@ -19,17 +19,17 @@ public struct Amlich {
     static func fromDate(_ date: SolarDate) -> Int {
         let (day, month, year) = (date.day, date.month, date.year)
 
-        let a: Int = (14 - day) / 12
-        let y: Int = year + 4800 - a
-        let m: Int = month + 12 * a - 3
+        let a: Double = floor(Double(14 - month) / 12.0)
+        let y: Double = Double(year) + 4800.0 - a
+        let m: Double = Double(month) + 12.0 * a - 3.0
 
-        var jd: Int = day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045
+        var jd: Double = Double(day) + floor((153.0 * m + 2.0) / 5.0) + 365.0 * y + floor(y / 4.0) - floor(y / 100.0) + floor(y / 400.0) - 32045.0
 
-        if jd < 2299161 {
-            jd = day + (153 * m + 2) / 5 + 365 * y + y / 4 - 32083
+        if jd < 2299161.0 {
+            jd = Double(day) + floor((153.0 * m + 2.0) / 5.0) + 365.0 * y + floor(y / 4.0) - 32083.0
         }
 
-        return jd
+        return Int(jd)
     }
 
 
@@ -165,10 +165,10 @@ public struct Amlich {
      * Find the day that starts the luner month 11 of the given year for the given time zone
      */
     static func lunarMonth11(of year: Int, with timeZone: Double) -> Int {
-        let off: Double = Double(self.fromDate(SolarDate(day: 31, month: 12, year: year))) - 2415021.076998695
+        let off: Double = Double(self.fromDate(SolarDate(day: 31, month: 12, year: year))) - 2415021
         let k: Int = Int(floor(Double(off) / 29.530588853))
         var nm: Int = newMoonDay(of: k, with: timeZone)
-        let sunLong: Int = self.sunLongitude(of: nm, with: timeZone) / 30
+        let sunLong: Int = self.sunLongitude(of: nm, with: timeZone)
 
         if sunLong >= 9 {
             nm = self.newMoonDay(of: k - 1, with: timeZone)
@@ -226,7 +226,8 @@ public struct Amlich {
         }
 
         lunarDay = dayNumber - monthStart + 1
-        let diff: Int = (monthStart - a11) / 29
+
+        let diff: Int = Int(floor(Double(monthStart - a11) / 29.0))
         lunarMonth = diff + 11
 
         if b11 - a11 > 365 {
