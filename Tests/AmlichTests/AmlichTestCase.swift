@@ -12,6 +12,7 @@ import XCTest
 final class AmlichTestCase: XCTestCase {
     func test_fromDate() {
         let date = SolarDate(day: 4, month: 10, year: 1582)
+        print(date.description)
         XCTAssertEqual(Amlich.fromDate(date), 2299160)
     }
 
@@ -50,6 +51,7 @@ final class AmlichTestCase: XCTestCase {
     func test_toLunar() {
         let solarDate = SolarDate(day: 18, month: 8, year: 2020)
         let lunarDate = Amlich.toLunar(of: solarDate, with: +7)
+        print(lunarDate.description)
 
         XCTAssertEqual(lunarDate.day, 29)
         XCTAssertEqual(lunarDate.month, 6)
@@ -63,7 +65,6 @@ final class AmlichTestCase: XCTestCase {
         XCTAssertEqual(anotherLunarDate.month, 6)
         XCTAssertEqual(anotherLunarDate.year, 2025)
         XCTAssertEqual(anotherLunarDate.isLeap, true)
-
     }
     
     func test_toSolar() {
