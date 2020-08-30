@@ -7,4 +7,5 @@ script:
   - swift build
   - swift test --enable-code-coverage
 after_success:
-   bash <(curl -s https://codecov.io/bash)
+  - llvm-cov export -format="lcov" .build/debug/AmlichPackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+  - bash <(curl -s https://codecov.io/bash)
