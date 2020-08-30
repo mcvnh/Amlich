@@ -4,8 +4,6 @@ language: swift
 osx_image: xcode11
 install: swift package update
 script:
-  - swift build
-  - swift test --enable-code-coverage
+  - xcodebuild test -scheme Amlich -destination platform="macOS" -enableCodeCoverage YES
 after_success:
-  - llvm-cov export -format="lcov" .build/debug/AmlichPackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
   - bash <(curl -s https://codecov.io/bash)
