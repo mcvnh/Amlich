@@ -47,9 +47,27 @@ SolarTerm.of(solar: solarDate, in: hour, with: timeZone)
 
 ## Installation
 
-- Add `.package(url: "https://github.com/anhmv/Amlich.git", from: "1.0.0")` to your `Package.swift` file's `dependencies`.
-- Update your packages using `$ swift package update`.
+### Cocoapods
+Amlich is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
 
+```ruby
+pod 'Amlich'
+```
+
+### Swift Package Manager
+Amlich is also available through [Swift Package Manager](https://github.com/apple/swift-package-manager). 
+To install it, simply add the dependency to your Package.Swift file:
+
+```swift
+...
+dependencies: [
+    .package(url: "https://github.com/anhmv/Amlich.git", from: "1.1.2"),
+],
+targets: [
+    .target( name: "[YourTarget]", dependencies: ["Amlich"]),
+]
+...
+```
 
 ## Help, feedback or suggestions?
 
